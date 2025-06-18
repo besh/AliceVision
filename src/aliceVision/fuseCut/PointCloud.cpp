@@ -139,7 +139,7 @@ void createVerticesWithVisibilities(const StaticVector<int>& cams,
     for (auto& lock : locks)
         omp_init_lock(&lock);
 
-    omp_set_nested(1);
+    omp_set_max_active_levels(2);
 #pragma omp parallel for num_threads(3)
     for (int c = 0; c < cams.size(); ++c)
     {
@@ -227,7 +227,7 @@ void createVerticesWithVisibilities(const StaticVector<int>& cams,
             }
         }
     }
-    omp_set_nested(0);
+    omp_set_max_active_levels(1);
 
     for (auto& lock : locks)
         omp_destroy_lock(&lock);
@@ -292,7 +292,7 @@ void PointCloud::fuseFromDepthMaps(const StaticVector<int>& cams, const Point3d 
 
     ALICEVISION_LOG_INFO("Load depth maps and add points.");
     {
-        omp_set_nested(1);
+        omp_set_max_active_levels(2);
 #pragma omp parallel for num_threads(3)
         for (int c = 0; c < cams.size(); c++)
         {
@@ -422,7 +422,7 @@ void PointCloud::fuseFromDepthMaps(const StaticVector<int>& cams, const Point3d 
                 }
             }
         }
-        omp_set_nested(0);
+        omp_set_max_active_levels(1);
     }
 
     ALICEVISION_LOG_INFO("Filter initial 3D points by pixel size to remove duplicates.");
